@@ -1,0 +1,27 @@
+version: '3'
+services:
+  db:
+    image: mongo:3.6-jessie
+    env_file: .env
+    restart: always
+  api:
+    build: ./api
+    volumes:
+      - "./api:/usr/src/api"
+    ports: 
+      - "3310:3310"
+    depends_on:
+      - db
+    env_file: .env
+    restart: always
+    command: npm run dev
+  app:
+    build: ./app
+    volumes:
+      - "./app:/usr/src/app"
+    ports:
+      - "5555:5555"
+    depends_on:
+      - api
+    env_file: .env
+    command: npm run dev -- -p 5555
